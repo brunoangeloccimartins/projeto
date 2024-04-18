@@ -10,6 +10,7 @@ import com.betrybe.agrix.ebytr.staff.service.CropService;
 import com.betrybe.agrix.ebytr.staff.service.FarmService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,7 @@ public class FarmController {
   }
 
   @GetMapping
+  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER') or hasAuthority('USER')")
   public ResponseEntity<List<FarmDto>> findAll() {
     List<Farm> farms = farmService.findAll();
     return ResponseEntity.ok(farms.stream().map(FarmDto::fromEntity).toList());
