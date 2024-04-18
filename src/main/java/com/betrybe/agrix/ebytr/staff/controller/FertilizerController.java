@@ -6,6 +6,7 @@ import com.betrybe.agrix.ebytr.staff.exception.FertilizerNotFoundException;
 import com.betrybe.agrix.ebytr.staff.service.FertilizerService;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ public class FertilizerController {
   }
 
   @GetMapping
+  @Secured("ADMIN")
   public ResponseEntity<List<FertilizerDto>> findAll() {
     List<Fertilizer> fertilizers = fertilizerService.findAll();
     return ResponseEntity.ok(fertilizers.stream().map(FertilizerDto::fromEntity).toList());
