@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -35,11 +36,12 @@ public class JwtFilter extends OncePerRequestFilter {
     Optional<String> token = extractToken(request);
     if (token.isPresent()) {
       String username = tokenService.decodeToken(token.get());
-      UserDetails userDetails = personService.getPersonByUsername(username);
+      UserDetails userDetails = personService.loadUserByUsername(username);
 
       UsernamePasswordAuthenticationToken authenticationToken =
           new UsernamePasswordAuthenticationToken(
               username, null, userDetails.getAuthorities());
+      SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
     filterChain.doFilter(request, response);
   }
